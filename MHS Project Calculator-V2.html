@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)file:///F:/Documents/Downloads/medford-tax-calculator-v2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medford high school tax impact calculator</title>
+<style>
+  #medford-calc {
+    max-width: 580px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  #medford-calc * { box-sizing: border-box; }
+  #medford-calc h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+    color: #0c0c0c;
+  }
+  #medford-calc .subtitle {
+    font-size: 13px;
+    color: #595959;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+  #medford-calc .eqv-badge {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #0c58d7;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+  }
+  #medford-calc .input-row { margin-bottom: 1.2rem; }
+  #medford-calc .input-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #595959;
+    margin-bottom: 6px;
+  }
+  #medford-calc .input-val { font-weight: 600; color: #0c0c0c; }
+  #medford-calc input[type="range"] {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #d6d6d6;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  #medford-calc input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #0c58d7;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 4px rgba(12,88,215,0.3);
+  }
+  #medford-calc input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #0c58d7;
+    cursor: pointer;
+    border: none;
+  }
+  #medford-calc .scenario-note {
+    font-size: 11px;
+    color: #8a8a8a;
+    text-align: center;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+  #medford-calc .result-card {
+    background: #f4f6fb;
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin: 1.25rem 0;
+    text-align: center;
+    border: 1px solid #dce4f5;
+  }
+  #medford-calc .result-label { font-size: 13px; color: #595959; margin: 0 0 4px; }
+  #medford-calc .result-num {
+    font-size: 46px;
+    font-weight: 700;
+    color: #0c58d7;
+    margin: 0;
+    line-height: 1.05;
+  }
+  #medford-calc .result-sub { font-size: 14px; color: #595959; margin: 6px 0 0; }
+  #medford-calc .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 1rem 0;
+  }
+  #medford-calc .detail-card {
+    background: #f7f7f5;
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  #medford-calc .detail-label { font-size: 11px; color: #8a8a8a; margin: 0 0 4px; line-height: 1.3; }
+  #medford-calc .detail-val { font-size: 15px; font-weight: 600; color: #1a1a1a; margin: 0; }
+  #medford-calc .compare-box {
+    background: #fff8e6;
+    border: 1px solid #f5d97a;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+  }
+  #medford-calc .compare-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #7a5c00;
+    margin: 0 0 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #medford-calc .compare-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 4px 0;
+    color: #4a3800;
+  }
+  #medford-calc .compare-row .diff { font-weight: 600; color: #1baf7a; }
+  #medford-calc .share-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1.25rem;
+    padding: 13px;
+    background: #0c58d7;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+  #medford-calc .share-btn:hover { background: #094bb8; }
+  #medford-calc .footnote {
+    font-size: 11px;
+    color: #8a8a8a;
+    margin-top: 1.25rem;
+    line-height: 1.6;
+    border-top: 1px solid #e4e4e4;
+    padding-top: 1rem;
+  }
+  #medford-calc .brand {
+    text-align: center;
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 1rem;
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 480px) {
+    #medford-calc .detail-grid { grid-template-columns: 1fr 1fr; }
+    #medford-calc .result-num { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+<div id="medford-calc">
+
+  <h2>What's your share of the new Medford high school?</h2>
+  <p class="subtitle">Drag the sliders to match your home and scenario. Numbers update live based on Medford's Equalized Valuation (EQV) of $16.78 billion — the state's official measure of total citywide property value.</p>
+  <span class="eqv-badge">Based on Medford EQV: $16,780,000,000</span>
+
+  <div class="input-row">
+    <div class="input-label"><span>Your home's assessed value</span><span class="input-val" id="homeval-out">$755,000</span></div>
+    <input type="range" min="200000" max="2000000" step="5000" value="755000" id="homeval">
+  </div>
+
+  <div class="input-row">
+    <div class="input-label"><span>Final project cost</span><span class="input-val" id="cost-out">$702M</span></div>
+    <input type="range" min="591" max="813" step="1" value="702" id="cost">
+  </div>
+
+  <div class="input-row">
+    <div class="input-label"><span>State (MSBA) reimbursement rate</span><span class="input-val" id="msba-out">52.31%</span></div>
+    <input type="range" min="30" max="60" step="0.01" value="52.31" id="msba">
+  </div>
+  <p class="scenario-note">Default shows the confirmed 52.31% MSBA rate. Slide left toward 30% for the worst-case scenario if state reimbursement is reduced.</p>
+
+  <div class="result-card">
+    <p class="result-label">Your estimated annual increase</p>
+    <p class="result-num" id="annual-result">$1,067/yr</p>
+    <p class="result-sub" id="monthly-result">about $89 per month</p>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <p class="detail-label">Medford's total share</p>
+      <p class="detail-val" id="city-share">$390M</p>
+    </div>
+    <div class="detail-card">
+      <p class="detail-label">Annual debt service</p>
+      <p class="detail-val" id="debt-service">$23.7M</p>
+    </div>
+    <div class="detail-card">
+      <p class="detail-label">% of median income</p>
+      <p class="detail-val" id="income-pct">0.82%</p>
+    </div>
+  </div>
+
+  <div class="compare-box">
+    <p class="compare-title">EQV vs. residential-only base — what the difference means for you</p>
+    <div class="compare-row"><span>This calculator (EQV $16.78B)</span><span id="comp-eqv">$1,067/yr</span></div>
+    <div class="compare-row"><span>Residential-only base ($12.5B)</span><span id="comp-res">$1,432/yr</span></div>
+    <div class="compare-row"><span>Your annual savings using EQV</span><span class="diff" id="comp-diff">$365/yr less</span></div>
+  </div>
+
+  <button class="share-btn" onclick="window.print()">Print or save my estimate</button>
+
+  <p class="footnote">
+    Estimate only. Uses Medford's state Equalized Valuation (EQV) of $16,780,000,000 as the total property tax base, reflecting all taxable property classes (residential, commercial, industrial). Assumes a 30-year debt exclusion bond at 4.5% interest and MSBA reimbursement applied to 85% of total project cost. Median household income used for percentage calculation: $129,540 (2024 ACS). The final MSBA rate is confirmed at 52.31% on eligible costs; the 30% scenario reflects a potential reduction. Actual costs depend on the final feasibility study outcome expected April 2027 and subsequent debt exclusion vote. This tool is for civic awareness purposes, produced by Medford Front Row / Medford Happenings. It is not an official City of Medford estimate.
+  </p>
+  <p class="brand">MEDFORD FRONT ROW · medfordhappenings.com</p>
+
+</div>
+<script>
+(function() {
+  var EQV        = 16780000000;
+  var RES_BASE   = 12500000000;
+  var MEDIAN_INC = 129540;
+
+  var homevalEl = document.getElementById('homeval');
+  var costEl    = document.getElementById('cost');
+  var msbaEl    = document.getElementById('msba');
+
+  function annualDebtService(principal, rate, years) {
+    var r = rate / 12, n = years * 12;
+    var mo = principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n) - 1);
+    return mo * 12;
+  }
+
+  function fmt(n)  { return '$' + Math.round(n).toLocaleString('en-US'); }
+  function fmtM(n) { return '$' + Math.round(n/1e6) + 'M'; }
+
+  function update() {
+    var homeval  = parseFloat(homevalEl.value);
+    var costM    = parseFloat(costEl.value);
+    var msbaPct  = parseFloat(msbaEl.value);
+    var msbaRate = msbaPct / 100;
+
+    document.getElementById('homeval-out').textContent = fmt(homeval);
+    document.getElementById('cost-out').textContent    = '$' + costM + 'M';
+    document.getElementById('msba-out').textContent    = msbaPct.toFixed(2) + '%';
+
+    var totalCost  = costM * 1e6;
+    var eligible   = totalCost * 0.85;
+    var msbaShare  = eligible * msbaRate;
+    var cityShare  = totalCost - msbaShare;
+    var annualDS   = annualDebtService(cityShare, 0.045, 30);
+
+    // EQV-based (this calculator)
+    var taxRateEQV = annualDS / EQV;
+    var myAnnualEQV = Math.round(taxRateEQV * homeval);
+    var myMonthlyEQV = Math.round(myAnnualEQV / 12);
+    var pctIncome = ((myAnnualEQV / MEDIAN_INC) * 100).toFixed(2);
+
+    // Residential-only base for comparison
+    var taxRateRES = annualDS / RES_BASE;
+    var myAnnualRES = Math.round(taxRateRES * homeval);
+
+    var diff = myAnnualRES - myAnnualEQV;
+
+    document.getElementById('annual-result').textContent  = fmt(myAnnualEQV) + '/yr';
+    document.getElementById('monthly-result').textContent = 'about ' + fmt(myMonthlyEQV) + ' per month';
+    document.getElementById('city-share').textContent     = fmtM(cityShare);
+    document.getElementById('debt-service').textContent   = '$' + (annualDS/1e6).toFixed(1) + 'M';
+    document.getElementById('income-pct').textContent     = pctIncome + '%';
+
+    document.getElementById('comp-eqv').textContent  = fmt(myAnnualEQV) + '/yr';
+    document.getElementById('comp-res').textContent  = fmt(myAnnualRES) + '/yr';
+    document.getElementById('comp-diff').textContent = fmt(diff) + '/yr less';
+  }
+
+  homevalEl.addEventListener('input', update);
+  costEl.addEventListener('input', update);
+  msbaEl.addEventListener('input', update);
+  update();
+})();
+</script>
+
+
+</body></html>
