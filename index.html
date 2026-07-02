@@ -1,1 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medford High School Tax Calculator — What's Your Share?</title>
+<meta name="description" content="Find out your estimated monthly and annual property tax increase for the new Medford High School project — costs range from $591M to $813M. Interactive calculator based on official state EQV data.">
+<meta property="og:title" content="Medford High School Tax Calculator — What's Your Share?">
+<meta property="og:description" content="Drag the sliders to see your personal share of the new Medford High School — before and after state reimbursement.">
+<meta property="og:url" content="https://mhscalc.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Medford High School Tax Calculator">
+<meta name="twitter:description" content="What's your monthly share of the new Medford High School? Find out in seconds.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f5f6f8;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+    color: #1a1a1a;
+  }
+
+  .wrapper {
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  /* ── Header bar ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+  .brand-link {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #0c58d7;
+    text-decoration: none;
+  }
+  .brand-link:hover { text-decoration: underline; }
+  .show-tag {
+    font-size: 11px;
+    color: #8a8a8a;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+  }
+
+  .card h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0c0c0c;
+    margin-bottom: 0.4rem;
+    line-height: 1.25;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #595959;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+  .eqv-badge {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #0c58d7;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Sliders ── */
+  .input-row { margin-bottom: 1.25rem; }
+  .input-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #595959;
+    margin-bottom: 7px;
+  }
+  .input-val { font-weight: 700; color: #0c0c0c; }
+
+  input[type="range"] {
+    width: 100%;
+    height: 5px;
+    border-radius: 3px;
+    background: #dde2ec;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #0c58d7;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    box-shadow: 0 1px 5px rgba(12,88,215,0.4);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #0c58d7;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+  }
+
+  .scenario-note {
+    font-size: 11px;
+    color: #9a9a9a;
+    text-align: center;
+    margin: -0.5rem 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  /* ── Result ── */
+  .result-card {
+    background: linear-gradient(135deg, #0c58d7 0%, #1474e8 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.25rem 0;
+    text-align: center;
+    color: #ffffff;
+  }
+  .result-label { font-size: 13px; opacity: 0.85; margin-bottom: 4px; }
+  .result-num { font-size: 48px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .result-sub { font-size: 15px; opacity: 0.9; margin-top: 6px; }
+
+  /* ── Detail grid ── */
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 1rem 0 1.25rem;
+  }
+  .detail-card {
+    background: #f7f8fb;
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .detail-label { font-size: 11px; color: #8a8a8a; margin-bottom: 4px; line-height: 1.3; }
+  .detail-val { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+
+  /* ── Compare box ── */
+  .compare-box {
+    background: #fffbea;
+    border: 1px solid #f0d96b;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .compare-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #7a5c00;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+  }
+  .compare-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #4a3c00;
+    padding: 3px 0;
+  }
+  .compare-row .savings { font-weight: 700; color: #1a7a4a; }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 10px; margin-top: 1.25rem; }
+
+  .btn-share {
+    flex: 1;
+    padding: 13px;
+    background: #0c58d7;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: background 0.15s;
+  }
+  .btn-share:hover { background: #094bb8; }
+
+  .btn-print {
+    flex: 1;
+    padding: 13px;
+    background: #f0f2f7;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-print:hover { background: #e2e6ef; }
+
+  /* ── Share message toast ── */
+  .share-toast {
+    display: none;
+    background: #e8f5ee;
+    border: 1px solid #a8d9bc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #1a5c35;
+    margin-top: 10px;
+    line-height: 1.5;
+    word-break: break-all;
+  }
+  .share-toast.visible { display: block; }
+
+  /* ── Footer ── */
+  .footnote {
+    font-size: 11px;
+    color: #9a9a9a;
+    margin-top: 1.25rem;
+    line-height: 1.65;
+    border-top: 1px solid #eaeaea;
+    padding-top: 1rem;
+  }
+
+  .footer-brand {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 12px;
+  }
+  .footer-brand a {
+    color: #0c58d7;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .footer-brand a:hover { text-decoration: underline; }
+  .footer-sep { color: #cccccc; margin: 0 6px; }
+
+  @media (max-width: 460px) {
+    .card { padding: 1.25rem 1rem; }
+    .result-num { font-size: 38px; }
+    .detail-grid { grid-template-columns: 1fr 1fr; }
+    .btn-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="card">
+    <h1>What's your share of the new Medford High School?</h1>
+    <p class="subtitle">Drag the sliders to match your home and scenario. Your estimated tax increase updates instantly, based on Medford's official state Equalized Valuation (EQV).</p>
+    <span class="eqv-badge">Medford EQV: $16,780,000,000</span>
+
+    <div class="input-row">
+      <div class="input-label">
+        <span>Your home's assessed value</span>
+        <span class="input-val" id="homeval-out">$755,000</span>
+      </div>
+      <input type="range" min="200000" max="2000000" step="5000" value="755000" id="homeval">
+    </div>
+
+    <div class="input-row">
+      <div class="input-label">
+        <span>Final project cost</span>
+        <span class="input-val" id="cost-out">$702M</span>
+      </div>
+      <input type="range" min="591" max="813" step="1" value="702" id="cost">
+    </div>
+
+    <div class="input-row">
+      <div class="input-label">
+        <span>State (MSBA) reimbursement rate</span>
+        <span class="input-val" id="msba-out">52.31%</span>
+      </div>
+      <input type="range" min="30" max="60" step="0.01" value="52.31" id="msba">
+    </div>
+    <p class="scenario-note">Confirmed MSBA rate is 52.31%. Slide left toward 30% to see the worst-case scenario.</p>
+
+    <div class="result-card">
+      <p class="result-label">Your estimated annual increase</p>
+      <p class="result-num" id="annual-result">—</p>
+      <p class="result-sub" id="monthly-result">—</p>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-card">
+        <p class="detail-label">Medford's total share</p>
+        <p class="detail-val" id="city-share">—</p>
+      </div>
+      <div class="detail-card">
+        <p class="detail-label">Annual debt service</p>
+        <p class="detail-val" id="debt-service">—</p>
+      </div>
+      <div class="detail-card">
+        <p class="detail-label">% of median income</p>
+        <p class="detail-val" id="income-pct">—</p>
+      </div>
+    </div>
+
+    <div class="compare-box">
+      <p class="compare-title">EQV vs. residential-only base — the difference for you</p>
+      <div class="compare-row"><span>This calculator (EQV $16.78B)</span><span id="comp-eqv">—</span></div>
+      <div class="compare-row"><span>Residential-only base ($14.99B, MA DLS 2026)</span><span id="comp-res">—</span></div>
+      <div class="compare-row"><span>Your annual savings using EQV</span><span class="savings" id="comp-diff">—</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-share" onclick="shareCalc()">📤 Share this calculator</button>
+      <button class="btn-print" onclick="window.print()">🖨️ Print my estimate</button>
+    </div>
+    <div class="share-toast" id="share-toast"></div>
+
+    <p class="footnote">
+      Estimate only. Uses Medford's state Equalized Valuation (EQV) of $16,780,000,000, reflecting all taxable property classes (residential, commercial, industrial). Assumes a 30-year debt exclusion bond at 4.5% interest and MSBA reimbursement applied to 85% of total project cost (standard MSBA eligibility ratio). Median household income: $129,540 (2024 U.S. Census ACS). Confirmed MSBA rate is 52.31%; the 30% scenario reflects a potential worst-case reduction. Final costs depend on the feasibility study outcome expected April 2027 and a subsequent debt exclusion vote. This tool is for civic awareness purposes only and is not an official City of Medford estimate. Presented by Sunday Morning Coffee &amp; Open Mic.
+    </p>
+  </div>
+
+  <div class="footer-brand">
+    <span style="color:#595959;font-weight:600;">Sunday Morning Coffee &amp; Open Mic</span>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var EQV        = 16780000000;
+  var RES_BASE   = 14987529174; // MA DLS 2026 total residential assessment
+  var MEDIAN_INC = 129540;
+  var SITE_URL   = 'https://mhscalc.com';
+
+  var homevalEl = document.getElementById('homeval');
+  var costEl    = document.getElementById('cost');
+  var msbaEl    = document.getElementById('msba');
+
+  function annualDebtService(principal, rate, years) {
+    var r = rate / 12, n = years * 12;
+    return (principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1)) * 12;
+  }
+
+  function fmt(n)  { return '$' + Math.round(n).toLocaleString('en-US'); }
+  function fmtM(n) { return '$' + Math.round(n / 1e6) + 'M'; }
+
+  function update() {
+    var homeval  = parseFloat(homevalEl.value);
+    var costM    = parseFloat(costEl.value);
+    var msbaPct  = parseFloat(msbaEl.value);
+    var msbaRate = msbaPct / 100;
+
+    document.getElementById('homeval-out').textContent = fmt(homeval);
+    document.getElementById('cost-out').textContent    = '$' + costM + 'M';
+    document.getElementById('msba-out').textContent    = msbaPct.toFixed(2) + '%';
+
+    var totalCost = costM * 1e6;
+    var cityShare = totalCost - (totalCost * 0.85 * msbaRate);
+    var annualDS  = annualDebtService(cityShare, 0.045, 30);
+
+    var rateEQV     = annualDS / EQV;
+    var myAnnualEQV = Math.round(rateEQV * homeval);
+    var myMonthly   = Math.round(myAnnualEQV / 12);
+    var pctIncome   = ((myAnnualEQV / MEDIAN_INC) * 100).toFixed(2);
+    var myAnnualRES = Math.round((annualDS / RES_BASE) * homeval);
+    var diff        = myAnnualRES - myAnnualEQV;
+
+    document.getElementById('annual-result').textContent  = fmt(myAnnualEQV) + '/yr';
+    document.getElementById('monthly-result').textContent = 'about ' + fmt(myMonthly) + ' per month · ' + pctIncome + '% of median income';
+    document.getElementById('city-share').textContent     = fmtM(cityShare);
+    document.getElementById('debt-service').textContent   = '$' + (annualDS / 1e6).toFixed(1) + 'M/yr';
+    document.getElementById('income-pct').textContent     = pctIncome + '%';
+    document.getElementById('comp-eqv').textContent       = fmt(myAnnualEQV) + '/yr';
+    document.getElementById('comp-res').textContent       = fmt(myAnnualRES) + '/yr';
+    document.getElementById('comp-diff').textContent      = fmt(diff) + '/yr less';
+
+    // store for share button
+    window._calcSummary = {
+      annual: fmt(myAnnualEQV),
+      monthly: fmt(myMonthly),
+      homeval: fmt(homeval),
+      cost: '$' + costM + 'M',
+      msba: msbaPct.toFixed(2) + '%'
+    };
+  }
+
+  window.shareCalc = function () {
+    var s = window._calcSummary;
+    var msg = 'My estimated share of the new Medford High School is '
+      + s.annual + '/yr (' + s.monthly + '/mo) — based on a '
+      + s.homeval + ' home, ' + s.cost + ' project cost, '
+      + s.msba + ' state reimbursement. Calculate yours: ' + SITE_URL;
+
+    var toast = document.getElementById('share-toast');
+
+    if (navigator.share) {
+      navigator.share({ title: 'Medford High School Tax Calculator', text: msg, url: SITE_URL })
+        .catch(function() {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(msg).then(function () {
+        toast.textContent = '✅ Copied to clipboard! Paste it in a group chat, Facebook post, or text message:\n\n' + msg;
+        toast.classList.add('visible');
+        setTimeout(function () { toast.classList.remove('visible'); }, 8000);
+      });
+    } else {
+      toast.textContent = 'Share this link: ' + SITE_URL;
+      toast.classList.add('visible');
+    }
+  };
+
+  [homevalEl, costEl, msbaEl].forEach(function(el) {
+    el.addEventListener('input', update);
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
 
